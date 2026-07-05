@@ -70,9 +70,14 @@ export async function renderCatalogView(container) {
     `;
 
     container.querySelector('#search-input')?.addEventListener('input', (e) => {
+      const cursorPos = e.target.selectionStart;
       searchTerm = e.target.value;
       draw();
-      container.querySelector('#search-input')?.focus();
+      const newInput = container.querySelector('#search-input');
+      if (newInput) {
+        newInput.focus();
+        newInput.setSelectionRange(cursorPos, cursorPos);
+      }
     });
 
     container.querySelectorAll('[data-seller-card]').forEach((el) => {
