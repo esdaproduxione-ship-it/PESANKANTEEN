@@ -1,0 +1,98 @@
+/* =========================================================
+   KANTIN DWP — DESIGN TOKENS
+   Konsep visual: "Ticket Rail" — terinspirasi dari struk/nota
+   printer thermal kantin: garis putus-putus perforasi,
+   angka nomor order bergaya mono, kartu yang terasa seperti
+   kertas struk yang baru dicetak.
+   ========================================================= */
+
+:root {
+  /* ---- Warna Brand (energik: orange/merah/kuning) ---- */
+  --color-orange: #FF7A29;
+  --color-orange-dark: #E8600F;
+  --color-orange-soft: #FFE4D1;
+
+  --color-red: #E63946;
+  --color-red-soft: #FCE0E2;
+
+  --color-yellow: #FFC93C;
+  --color-yellow-soft: #FFF4D6;
+
+  --color-green: #2FAE60;
+  --color-green-soft: #DFF6E8;
+
+  /* ---- Netral ---- */
+  --color-white: #FFFFFF;
+  --color-bg: #F6F5F2;
+  --color-surface: #FFFFFF;
+  --color-border: #E7E3DC;
+  --color-text: #201A16;
+  --color-text-muted: #7A7168;
+
+  /* ---- Dark mode override (diaktifkan via [data-theme="dark"]) ---- */
+  --color-bg-dark: #17140F;
+  --color-surface-dark: #221D17;
+  --color-border-dark: #35302A;
+  --color-text-dark: #F3EFE9;
+  --color-text-muted-dark: #B1A79B;
+
+  /* ---- Tipografi ----
+     Display: Poppins  -> judul, angka besar, energik & bulat
+     Body/UI: Plus Jakarta Sans -> teks antarmuka, mudah dibaca
+     Data/Struk: Space Mono -> nomor order, harga, mimic thermal printer
+  */
+  --font-display: 'Poppins', system-ui, sans-serif;
+  --font-body: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-mono: 'Space Mono', 'Courier New', monospace;
+
+  --fs-xs: 0.75rem;
+  --fs-sm: 0.875rem;
+  --fs-base: 1rem;
+  --fs-lg: 1.125rem;
+  --fs-xl: 1.5rem;
+  --fs-2xl: 2rem;
+  --fs-3xl: 2.75rem;
+
+  /* ---- Spacing ---- */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-8: 48px;
+
+  /* ---- Radius & Shadow ---- */
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-pill: 999px;
+
+  --shadow-soft: 0 4px 16px rgba(32, 26, 22, 0.06);
+  --shadow-elevated: 0 12px 32px rgba(32, 26, 22, 0.12);
+  --shadow-glass: 0 8px 32px rgba(255, 122, 41, 0.10);
+
+  /* ---- Glassmorphism ---- */
+  --glass-bg: rgba(255, 255, 255, 0.65);
+  --glass-border: rgba(255, 255, 255, 0.5);
+  --glass-blur: blur(16px);
+
+  /* ---- Status kondisi penjual ---- */
+  --status-no-orders: var(--color-green);
+  --status-has-orders: var(--color-yellow);
+  --status-busy: var(--color-red);
+  --status-closed: #A9A29A;
+
+  --transition-fast: 150ms ease;
+  --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+[data-theme="dark"] {
+  --color-bg: var(--color-bg-dark);
+  --color-surface: var(--color-surface-dark);
+  --color-border: var(--color-border-dark);
+  --color-text: var(--color-text-dark);
+  --color-text-muted: var(--color-text-muted-dark);
+  --glass-bg: rgba(34, 29, 23, 0.65);
+  --glass-border: rgba(255, 255, 255, 0.08);
+}

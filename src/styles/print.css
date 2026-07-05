@@ -1,0 +1,53 @@
+/* =========================================================
+   PRINT STYLESHEET — Nota Pesanan
+   Aktif hanya saat window.print() dipanggil dari receiptPrint.js
+   Mendukung 2 mode: thermal (58/80mm) dan A4, dipilih lewat
+   class pada <body> yang di-set sesaat sebelum print.
+   ========================================================= */
+
+@media print {
+  body * { visibility: hidden; }
+  #receipt-print-area, #receipt-print-area * { visibility: visible; }
+  #receipt-print-area {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+  }
+
+  .no-print { display: none !important; }
+}
+
+/* ---- Mode Thermal (58mm / 80mm) ---- */
+body.print-thermal-58 #receipt-print-area { width: 58mm; font-size: 10px; }
+body.print-thermal-80 #receipt-print-area { width: 80mm; font-size: 11px; }
+
+.receipt-thermal {
+  font-family: 'Space Mono', 'Courier New', monospace;
+  color: #000;
+  padding: 4mm;
+}
+.receipt-thermal__center { text-align: center; }
+.receipt-thermal__divider { border-top: 1px dashed #000; margin: 2mm 0; }
+.receipt-thermal__row { display: flex; justify-content: space-between; gap: 4px; }
+.receipt-thermal__total { font-weight: bold; font-size: 1.1em; }
+
+/* ---- Mode A4 ---- */
+body.print-a4 #receipt-print-area {
+  width: 210mm;
+  padding: 15mm;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  color: #000;
+}
+.receipt-a4__header {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 2px solid #000;
+  padding-bottom: 8mm;
+  margin-bottom: 8mm;
+}
+.receipt-a4 table { width: 100%; border-collapse: collapse; }
+.receipt-a4 th, .receipt-a4 td {
+  text-align: left;
+  padding: 3mm;
+  border-bottom: 1px solid #ccc;
+}
