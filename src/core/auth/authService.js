@@ -36,20 +36,36 @@ export async function initAuth() {
 async function loadProfile(authUser) {
   const { data: profile, error } = await supabase
     .from('users')
-    .select('*, roles(name), sellers(*)')
+    .select('*, sellers(*)')
     .eq('id', authUser.id)
     .single();
 
   if (error) {
     console.error('[authService] Gagal memuat profil:', error.message);
     authStore.setState({ user: authUser, profile: null, loading: false });
-    // Lempar error asli (bukan pesan generik) supaya bisa ditampilkan
-    // langsung ke pengguna di layar, tanpa perlu buka DevTools.
     throw new Error(`Query profil gagal: ${error.message} (code: ${error.code || '-'})`);
   }
 
-  authStore.setState({ user: authUser, profile: profile || null, loading: false });
-  return profile || null;
+  // Ambil nama role lewat query terpisah (bukan embed roles(name)) — lebih
+  // sederhana dan tidak bergantung pada PostgREST berhasil mendeteksi relasi
+  // FK / grant khusus di tabel roles, yang beberapa kali terbukti rewel.
+  let roleName = null;
+  if (profile?.role_id) {
+    const { data: roleRow, error: roleError } = await supabase
+      .from('roles')
+      .select('name')
+      .eq('id', profile.role_id)
+      .maybeSingle();
+    if (roleError) {
+      console.error('[authService] Gagal memuat role:', roleError.message);
+    } else {
+      roleName = roleRow?.name || null;
+    }
+  }
+
+  const fullProfile = profile ? { ...profile, roles: roleName ? { name: roleName } : null } : null;
+  authStore.setState({ user: authUser, profile: fullProfile, loading: false });
+  return fullProfile;
 }
 
 export async function signInWithPassword(email, password, captchaToken) {
