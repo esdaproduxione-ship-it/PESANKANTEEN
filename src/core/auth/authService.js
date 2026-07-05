@@ -11,14 +11,22 @@ export async function initAuth() {
 
   const { data: { session } } = await supabase.auth.getSession();
   if (session?.user) {
-    await loadProfile(session.user);
+    try {
+      await loadProfile(session.user);
+    } catch (err) {
+      console.error('[authService] Gagal memuat profil awal:', err.message);
+    }
   } else {
     authStore.setState({ loading: false });
   }
 
   supabase.auth.onAuthStateChange(async (_event, session) => {
     if (session?.user) {
-      await loadProfile(session.user);
+      try {
+        await loadProfile(session.user);
+      } catch (err) {
+        console.error('[authService] Gagal memuat profil (auth state change):', err.message);
+      }
     } else {
       authStore.setState({ user: null, profile: null, loading: false });
     }
@@ -34,6 +42,10 @@ async function loadProfile(authUser) {
 
   if (error) {
     console.error('[authService] Gagal memuat profil:', error.message);
+    authStore.setState({ user: authUser, profile: null, loading: false });
+    // Lempar error asli (bukan pesan generik) supaya bisa ditampilkan
+    // langsung ke pengguna di layar, tanpa perlu buka DevTools.
+    throw new Error(`Query profil gagal: ${error.message} (code: ${error.code || '-'})`);
   }
 
   authStore.setState({ user: authUser, profile: profile || null, loading: false });
