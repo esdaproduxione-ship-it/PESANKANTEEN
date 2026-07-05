@@ -50,13 +50,12 @@ async function renderRoute() {
   if (path === '/tracking') return renderOrderTrackingView(appRoot, { orderId: query.order, whatsapp: query.wa });
 
   // ---- Rute autentikasi ----
-  if (path === '/login/seller') return renderLoginView(appRoot, { role: 'seller' });
-  if (path === '/login/admin') return renderLoginView(appRoot, { role: 'admin' });
+  if (path === '/login' || path === '/login/seller' || path === '/login/admin') return renderLoginView(appRoot);
 
   // ---- Rute penjual (terproteksi) ----
   if (path.startsWith('/seller')) {
     if (!canAccess(['seller'])) {
-      window.location.hash = '#/login/seller';
+      window.location.hash = '#/login';
       return;
     }
     const seller = profile?.sellers?.[0] || mockSellers[0]; // fallback demo
@@ -79,7 +78,7 @@ async function renderRoute() {
   // ---- Rute admin (terproteksi) ----
   if (path.startsWith('/admin')) {
     if (!canAccess(['admin', 'superadmin'])) {
-      window.location.hash = '#/login/admin';
+      window.location.hash = '#/login';
       return;
     }
     appRoot.innerHTML = renderShell('admin', '#' + path);

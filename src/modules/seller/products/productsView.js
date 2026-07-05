@@ -73,7 +73,7 @@ export async function renderSellerProductsView(container, seller) {
             <input type="number" id="base_price" name="base_price" value="${product?.base_price || ''}" min="0" required />
           </div>
           <div class="field">
-            <label for="extra_fee">Biaya Tambahan (min. Rp${DEFAULT_SETTINGS.min_extra_fee})</label>
+            <label for="extra_fee">Biaya Kirim Pesanan (per satuan bungkus/gelas/mangkok, min. Rp${DEFAULT_SETTINGS.min_extra_fee})</label>
             <input type="number" id="extra_fee" name="extra_fee" value="${product?.extra_fee || DEFAULT_SETTINGS.min_extra_fee}" min="${DEFAULT_SETTINGS.min_extra_fee}" required />
           </div>
           <div class="field">
