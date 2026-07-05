@@ -39,20 +39,43 @@ async function loadProfile(authUser) {
   authStore.setState({ user: authUser, profile: profile || null, loading: false });
 }
 
-export async function signInWithPassword(email, password) {
+export async function signInWithPassword(email, password, captchaToken) {
   if (!isSupabaseConfigured) {
     throw new Error('Supabase belum dikonfigurasi. Lihat .env.example.');
   }
-  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+    options: captchaToken ? { captchaToken } : undefined,
+  });
   if (error) throw error;
   return data;
 }
 
-export async function signUpSeller({ email, password, fullName, businessName }) {
+export async function signInWithUsername(username, password, captchaToken) {
   if (!isSupabaseConfigured) {
     throw new Error('Supabase belum dikonfigurasi. Lihat .env.example.');
   }
-  const { data: authData, error: authError } = await supabase.auth.signUp({ email, password });
+  // Supabase Auth berbasis email, jadi kita cari dulu email dari username
+  // lewat RPC (lihat migrasi 0006_username_login.sql), baru login.
+  const { data: email, error: lookupError } = await supabase.rpc('rpc_get_email_by_username', {
+    p_username: username,
+  });
+  if (lookupError) throw lookupError;
+  if (!email) throw new Error('Username tidak ditemukan.');
+
+  return signInWithPassword(email, password, captchaToken);
+}
+
+export async function signUpSeller({ username, email, password, fullName, businessName, captchaToken }) {
+  if (!isSupabaseConfigured) {
+    throw new Error('Supabase belum dikonfigurasi. Lihat .env.example.');
+  }
+  const { data: authData, error: authError } = await supabase.auth.signUp({
+    email,
+    password,
+    options: captchaToken ? { captchaToken } : undefined,
+  });
   if (authError) throw authError;
 
   const userId = authData.user?.id;
@@ -60,11 +83,15 @@ export async function signUpSeller({ email, password, fullName, businessName }) 
 
   const { data: sellerRole } = await supabase.from('roles').select('id').eq('name', 'seller').single();
 
-  const { error: userError } = await supabase.from('users').insert({
+  // Upsert (bukan insert biasa): trigger `on_auth_user_created` di database
+  // sudah otomatis membuat baris users dasar begitu akun auth dibuat, jadi di
+  // sini kita cukup lengkapi/menimpa dengan data pendaftaran yang sebenarnya.
+  const { error: userError } = await supabase.from('users').upsert({
     id: userId,
     role_id: sellerRole?.id,
     full_name: fullName,
     email,
+    username,
   });
   if (userError) throw userError;
 

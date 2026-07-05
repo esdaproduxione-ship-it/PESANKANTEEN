@@ -51,3 +51,5 @@ export const ROLES = {
   ADMIN: 'admin',
   SELLER: 'seller',
 };
+
+export const TURNSTILE_SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY || '';
