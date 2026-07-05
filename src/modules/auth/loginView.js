@@ -1,4 +1,4 @@
-import { signInWithUsername, signUpSeller, getCurrentRole } from '../../core/auth/authService.js';
+import { signInWithUsername, signUpSeller, getCurrentRole, authStore } from '../../core/auth/authService.js';
 import { showToast } from '../shared/toast/toast.js';
 import { isRequired } from '../../core/utils/validators.js';
 import { TURNSTILE_SITE_KEY } from '../../config/constants.js';
@@ -137,10 +137,10 @@ export function renderLoginView(container, { role = 'seller' } = {}) {
         await signInWithUsername(username, password, captchaToken);
         const actualRole = getCurrentRole();
         if (actualRole !== role) {
+          const rawProfile = authStore.getState().profile;
           showToast(
-            actualRole
-              ? `Login berhasil, tapi akun ini terdaftar sebagai "${actualRole}", bukan "${role}".`
-              : 'Login berhasil, tapi profil akun tidak ditemukan. Hubungi admin.'
+            `Role tidak cocok. Data profil mentah: ${JSON.stringify(rawProfile)}`,
+            { duration: 15000 }
           );
           resetCaptcha();
           return;
