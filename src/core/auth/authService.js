@@ -37,6 +37,7 @@ async function loadProfile(authUser) {
   }
 
   authStore.setState({ user: authUser, profile: profile || null, loading: false });
+  return profile || null;
 }
 
 export async function signInWithPassword(email, password, captchaToken) {
@@ -49,6 +50,15 @@ export async function signInWithPassword(email, password, captchaToken) {
     options: captchaToken ? { captchaToken } : undefined,
   });
   if (error) throw error;
+
+  // PENTING: tunggu profil (termasuk role) selesai dimuat sebelum resolve.
+  // Tanpa ini, kode pemanggil (loginView) akan langsung pindah rute
+  // (mis. ke #/admin) sebelum authStore tahu role user, sehingga guard rute
+  // melempar balik ke halaman login walau login sudah berhasil.
+  if (data.user) {
+    await loadProfile(data.user);
+  }
+
   return data;
 }
 
