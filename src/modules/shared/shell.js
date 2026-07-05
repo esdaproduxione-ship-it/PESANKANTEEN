@@ -5,6 +5,7 @@ const NAV_ITEMS = {
     { hash: '#/seller', label: '📊 Dashboard' },
     { hash: '#/seller/products', label: '🍜 Kelola Produk' },
     { hash: '#/seller/orders', label: '🎫 Pesanan' },
+    { hash: '#/seller/profile', label: '🏪 Profil Toko' },
   ],
   admin: [
     { hash: '#/admin', label: '📊 Dashboard' },

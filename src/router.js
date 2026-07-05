@@ -10,6 +10,7 @@ import { renderLoginView } from './modules/auth/loginView.js';
 
 import { renderSellerDashboard } from './modules/seller/dashboard/dashboardView.js';
 import { renderSellerProductsView } from './modules/seller/products/productsView.js';
+import { renderSellerProfileView } from './modules/seller/profile/profileView.js';
 import { fetchSellerOrders } from './modules/orderService.js';
 
 import { renderAdminDashboard } from './modules/admin/dashboard/dashboardView.js';
@@ -70,6 +71,8 @@ async function renderRoute() {
     } else if (path === '/seller/orders') {
       const orders = await fetchSellerOrders(seller.id);
       content.innerHTML = `<div class="container" style="padding:var(--space-5) 0;"><h1 class="display">Semua Pesanan</h1><p style="color:var(--color-text-muted); margin-top:var(--space-3);">${orders.length} pesanan ditemukan. Lihat detail di menu Dashboard.</p></div>`;
+    } else if (path === '/seller/profile') {
+      await renderSellerProfileView(content, seller);
     }
     return;
   }
