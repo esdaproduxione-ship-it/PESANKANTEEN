@@ -48,6 +48,11 @@ export function renderLoginView(container, { role = 'seller' } = {}) {
               </a>
             </p>
           ` : ''}
+          <p style="text-align:center; margin-top: var(--space-2); font-size: var(--fs-sm);">
+            ${role === 'admin'
+              ? '<a href="#/login/seller" style="color:var(--color-text-muted);">Masuk sebagai Penjual &rarr;</a>'
+              : '<a href="#/login/admin" style="color:var(--color-text-muted);">Masuk sebagai Admin &rarr;</a>'}
+          </p>
           <p style="text-align:center; margin-top: var(--space-2);">
             <a href="#/" style="font-size: var(--fs-sm); color:var(--color-text-muted);">&larr; Kembali ke Katalog Pembeli</a>
           </p>

@@ -24,9 +24,12 @@ export async function renderCatalogView(container) {
         <div class="container" style="padding-top: var(--space-5); padding-bottom: var(--space-4);">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: var(--space-5);">
             <h1 class="display" style="font-size: var(--fs-2xl);">🍽️ Kantin DWP</h1>
-            <button class="btn btn--primary" id="btn-open-cart">
-              🛒 Keranjang (${getCartCount()})
-            </button>
+            <div style="display:flex; gap: var(--space-2); align-items:center;">
+              <a href="#/login/seller" style="font-size: var(--fs-sm); color:var(--color-text-muted); white-space:nowrap;">🔑 Masuk Penjual/Admin</a>
+              <button class="btn btn--primary" id="btn-open-cart">
+                🛒 Keranjang (${getCartCount()})
+              </button>
+            </div>
           </div>
           <input type="search" id="search-input" placeholder="Cari makanan atau minuman..."
             value="${searchTerm}"
