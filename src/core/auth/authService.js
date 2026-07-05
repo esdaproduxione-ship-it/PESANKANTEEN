@@ -36,7 +36,7 @@ export async function initAuth() {
 async function loadProfile(authUser) {
   const { data: profile, error } = await supabase
     .from('users')
-    .select('*, sellers(*)')
+    .select('*')
     .eq('id', authUser.id)
     .single();
 
@@ -63,7 +63,24 @@ async function loadProfile(authUser) {
     }
   }
 
-  const fullProfile = profile ? { ...profile, roles: roleName ? { name: roleName } : null } : null;
+  // Sama seperti roles: ambil data toko (sellers) lewat query terpisah,
+  // BUKAN lewat embed `sellers(*)`. Embed ini pernah terbukti diam-diam
+  // gagal/kosong tanpa error, menyebabkan seluruh halaman penjual jatuh ke
+  // data contoh (mock) alih-alih data toko asli.
+  let sellerRows = [];
+  const { data: sellerData, error: sellerError } = await supabase
+    .from('sellers')
+    .select('*')
+    .eq('user_id', authUser.id);
+  if (sellerError) {
+    console.error('[authService] Gagal memuat data toko:', sellerError.message);
+  } else {
+    sellerRows = sellerData || [];
+  }
+
+  const fullProfile = profile
+    ? { ...profile, roles: roleName ? { name: roleName } : null, sellers: sellerRows }
+    : null;
   authStore.setState({ user: authUser, profile: fullProfile, loading: false });
   return fullProfile;
 }

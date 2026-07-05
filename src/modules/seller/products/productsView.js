@@ -45,10 +45,14 @@ export async function renderSellerProductsView(container, seller) {
     container.querySelectorAll('[data-delete]').forEach((btn) => {
       btn.addEventListener('click', async () => {
         if (!confirm('Hapus produk ini?')) return;
-        await deleteProduct(btn.dataset.delete);
-        products = products.filter((p) => p.id !== btn.dataset.delete);
-        showToast('Produk dihapus');
-        draw();
+        try {
+          await deleteProduct(btn.dataset.delete);
+          products = products.filter((p) => p.id !== btn.dataset.delete);
+          showToast('Produk dihapus');
+          draw();
+        } catch (err) {
+          showToast('Gagal menghapus: ' + err.message);
+        }
       });
     });
   }
@@ -105,16 +109,20 @@ export async function renderSellerProductsView(container, seller) {
       return;
     }
 
-    if (editingProduct) {
-      const updated = await updateProduct(editingProduct.id, payload);
-      products = products.map((p) => p.id === editingProduct.id ? { ...p, ...updated, sell_price: payload.base_price + payload.extra_fee } : p);
-      showToast('Produk diperbarui');
-    } else {
-      const created = await createProduct(payload);
-      products = [...products, { ...created, sell_price: payload.base_price + payload.extra_fee }];
-      showToast('Produk ditambahkan');
+    try {
+      if (editingProduct) {
+        const updated = await updateProduct(editingProduct.id, payload);
+        products = products.map((p) => p.id === editingProduct.id ? { ...p, ...updated, sell_price: payload.base_price + payload.extra_fee } : p);
+        showToast('Produk diperbarui');
+      } else {
+        const created = await createProduct(payload);
+        products = [...products, { ...created, sell_price: payload.base_price + payload.extra_fee }];
+        showToast('Produk ditambahkan');
+      }
+      draw();
+    } catch (err) {
+      showToast('Gagal menyimpan produk: ' + err.message);
     }
-    draw();
   }
 
   draw();
