@@ -79,7 +79,7 @@ async function renderRoute() {
 
   // ---- Rute admin (terproteksi) ----
   if (path.startsWith('/admin')) {
-    if (!canAccess(['admin'])) {
+    if (!canAccess(['admin', 'superadmin'])) {
       window.location.hash = '#/login/admin';
       return;
     }

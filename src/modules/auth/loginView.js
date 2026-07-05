@@ -136,7 +136,8 @@ export function renderLoginView(container, { role = 'seller' } = {}) {
       if (mode === 'login') {
         await signInWithUsername(username, password, captchaToken);
         const actualRole = getCurrentRole();
-        if (actualRole !== role) {
+        const roleOk = role === 'admin' ? ['admin', 'superadmin'].includes(actualRole) : actualRole === role;
+        if (!roleOk) {
           const rawProfile = authStore.getState().profile;
           showToast(
             `Role tidak cocok. Data profil mentah: ${JSON.stringify(rawProfile)}`,
