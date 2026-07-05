@@ -7,6 +7,7 @@ import {
 import { renderSellerStatusBadge } from '../../../components/Badge.js';
 import { ORDER_STATUS_LABEL } from '../../../config/constants.js';
 import { formatRupiah, timeAgo } from '../../../core/utils/formatters.js';
+import { computeEffectiveOpenStatus } from '../../../core/utils/operatingHours.js';
 import { printReceipt } from '../../shared/receipt/receiptPrint.js';
 import { showToast } from '../../shared/toast/toast.js';
 
@@ -17,7 +18,7 @@ export async function renderSellerDashboard(container, seller) {
 
   function activeConditionStatus() {
     const active = orders.filter((o) => ['pending', 'processing'].includes(o.status));
-    if (!seller.is_open) return 'closed';
+    if (!computeEffectiveOpenStatus(seller)) return 'closed';
     if (active.length >= 5) return 'busy';
     if (active.length > 0) return 'has_orders';
     return 'no_orders';
@@ -44,7 +45,7 @@ export async function renderSellerDashboard(container, seller) {
         <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(160px,1fr)); gap: var(--space-4); margin-bottom: var(--space-6);">
           <div class="metric-card"><div class="metric-card__label">Pesanan Menunggu</div><div class="metric-card__value">${pendingOrders.length}</div></div>
           <div class="metric-card"><div class="metric-card__label">Total Pesanan Hari Ini</div><div class="metric-card__value">${orders.length}</div></div>
-          <div class="metric-card"><div class="metric-card__label">Status Toko</div><div class="metric-card__value" style="font-size:var(--fs-lg);">${seller.is_open ? 'Buka' : 'Tutup'}</div></div>
+          <div class="metric-card"><div class="metric-card__label">Status Toko</div><div class="metric-card__value" style="font-size:var(--fs-lg);">${computeEffectiveOpenStatus(seller) ? 'Buka' : 'Tutup'}</div></div>
         </div>
 
         <h2 style="margin-bottom: var(--space-3);">🎫 Pesanan Masuk (Perlu Aksi)</h2>
