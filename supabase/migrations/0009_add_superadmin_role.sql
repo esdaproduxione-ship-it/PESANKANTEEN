@@ -3,6 +3,11 @@
 -- ditambah kemampuan khusus: membuat akun penjual baru & reset password
 -- penjual (lewat Edge Function, karena butuh service role key).
 
+-- Tabel roles awalnya cuma mengizinkan name in ('admin','seller') lewat
+-- CHECK constraint. Longgarkan dulu supaya 'superadmin' bisa dimasukkan.
+alter table roles drop constraint if exists roles_name_check;
+alter table roles add constraint roles_name_check check (name in ('admin', 'seller', 'superadmin'));
+
 insert into roles (name) values ('superadmin') on conflict (name) do nothing;
 
 create or replace function fn_is_admin()
